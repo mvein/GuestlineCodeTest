@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{56A48CAB-9F81-422F-89AB-9229B44C0574}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{84313D68-BBD4-46E8-9FB9-06B23032BC84}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelRoomAvailability", "src\HotelRoomAvailability\HotelRoomAvailability.csproj", "{2EF17AFD-F6AD-41E1-AF50-E216C9248634}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2EF17AFD-F6AD-41E1-AF50-E216C9248634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EF17AFD-F6AD-41E1-AF50-E216C9248634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EF17AFD-F6AD-41E1-AF50-E216C9248634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EF17AFD-F6AD-41E1-AF50-E216C9248634}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2EF17AFD-F6AD-41E1-AF50-E216C9248634} = {56A48CAB-9F81-422F-89AB-9229B44C0574}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {83EE4703-6866-43DA-9D94-A8B028DFC1B8}
+	EndGlobalSection
+EndGlobal
