@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Text;
 
-namespace GuestlineCodeTest.Hotels;
+namespace HotelRoomAvailability;
 
 public record Hotel
 {
@@ -264,7 +265,7 @@ internal class Program
 
         var availableRooms = hotel.Rooms?
             .Where(r => r.RoomType == roomType)
-            .Select(r => new { r.RoomId, Availability = new List<(DateTime? AvailableFrom, DateTime? AvailableTo)> { (today, today.AddDays(daysAhead)) } })
+            .Select(r => new { r.RoomId, Availability = new List<(DateTime? AvailableFrom, DateTime? AvailableTo)> { (today.Date, today.Date.AddDays(daysAhead)) } })
             .ToList() ?? [];
 
         var bookedRooms = Bookings!

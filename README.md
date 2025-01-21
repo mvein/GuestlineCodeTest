@@ -65,7 +65,7 @@ Examples:
 Availability(H1, 20240901, SGL)
 output: (20240901, 2)
 
-Availability(H1, 20240901-20240903, DBL)
+Availability(H1, 20240901-20240903, DBL, ovb)
 output: (20240901-20240903, -1) -- when hotel allows overbooking and 'ovb' param was used
 ```
 
@@ -113,7 +113,7 @@ output: (20241101-20241103,2), (20241203-20241210, 1)
 ```
 
 #### Booking data
-**File Format** JSON
+**File Format:** JSON
 
 **Structure:**
 ```json

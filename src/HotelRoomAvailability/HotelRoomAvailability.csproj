@@ -5,11 +5,16 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <StartupObject>GuestlineCodeTest.Hotels.Program</StartupObject>
+    <StartupObject>HotelRoomAvailability.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+  	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+  		<_Parameter1>HotelRoomAvailability.IntegrationTests</_Parameter1>
+  	</AssemblyAttribute>
   </ItemGroup>
 
 </Project>
