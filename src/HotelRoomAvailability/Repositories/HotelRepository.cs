@@ -9,6 +9,16 @@ public class HotelRepository(IMemoryCache memoryCache) : FileSourceRepository<Ho
 {
     protected override string CacheKey => Args.Hotels;
 
-    public Hotel? Get(string id)
-        => Data.FirstOrDefault(h => h.Id == id);
+    public async Task<Hotel?> Get(string id, CancellationToken cancellationToken = default)
+    {
+        await foreach (var hotel in LoadData(cancellationToken))
+        {
+            if (hotel.Id == id)
+            {
+                return hotel;
+            }
+        }
+
+        return null;
+    }
 }

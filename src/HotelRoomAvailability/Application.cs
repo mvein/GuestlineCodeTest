@@ -19,14 +19,14 @@ public class Application(IOptions<CommandLineOptions> options, IMemoryCache cach
         ? Task.CompletedTask
         : RunInternal();
 
-    private Task RunInternal()
+    private async Task RunInternal()
     {
         string? input;
         while (!string.IsNullOrWhiteSpace(input = Console.ReadLine()))
         {
             if (input.StartsWith(Args.AvailabilityCommand.Name))
             {
-                HandleAvailabilityCommands(ParseAvailabilityCommands(input));
+                await HandleAvailabilityCommands(ParseAvailabilityCommands(input));
             }
             else if (input.StartsWith(Args.SearchCommand.Name))
             {
@@ -37,11 +37,9 @@ public class Application(IOptions<CommandLineOptions> options, IMemoryCache cach
                     continue;
                 }
 
-                HandleSearchCommand(roomType!, hotelId!, daysAhead!.Value);
+                await HandleSearchCommand(roomType!, hotelId!, daysAhead!.Value);
             }
         }
-
-        return Task.CompletedTask;
     }
 
     private bool ParseArgs()
@@ -150,9 +148,9 @@ public class Application(IOptions<CommandLineOptions> options, IMemoryCache cach
         return roomAvailabilityCommands;
     }
 
-    private void HandleAvailabilityCommands(IEnumerable<RoomAvailabilityCommand> availabilities)
+    private async Task HandleAvailabilityCommands(IEnumerable<RoomAvailabilityCommand> availabilities)
     {
-        var roomsAvailabilities = _availabilityService.Availability([.. availabilities]);
+        var roomsAvailabilities = await _availabilityService.Availability([.. availabilities]);
 
         var result = roomsAvailabilities.Select(r => r.StartDate == r.EndDate
             ? $"({r.StartDate.ToString(CustomDateFormatConverter.DateFormat)},{r.Count})"
@@ -185,11 +183,11 @@ public class Application(IOptions<CommandLineOptions> options, IMemoryCache cach
         return (roomType, hotelId, daysAhead);
     }
 
-    private void HandleSearchCommand(string roomType, string hotelId, int daysAhead)
+    private async Task HandleSearchCommand(string roomType, string hotelId, int daysAhead)
     {
-        var roomsAvailabilities = _availabilityService.Search(roomType, hotelId, daysAhead);
+        var roomsAvailabilities = await _availabilityService.Search(roomType, hotelId, daysAhead);
 
-        var totalAvailability = roomsAvailabilities.Select(r => $"({r.StartDate.ToString(CustomDateFormatConverter.DateFormat)}-{r.EndDate.ToString(CustomDateFormatConverter.DateFormat)},{r.Count})");
+        var totalAvailability = roomsAvailabilities.Select(static r => $"({r.StartDate.ToString(CustomDateFormatConverter.DateFormat)}-{r.EndDate.ToString(CustomDateFormatConverter.DateFormat)},{r.Count})");
 
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendJoin(", ", totalAvailability);

@@ -4,5 +4,5 @@ namespace HotelRoomAvailability.Repositories.Abstractions;
 
 public interface IHotelsRepository
 {
-    Hotel? Get(string id);
+    Task<Hotel?> Get(string id, CancellationToken cancellationToken = default);
 }

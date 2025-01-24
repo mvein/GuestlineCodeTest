@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using HotelRoomAvailability.Extensions;
 using HotelRoomAvailability.Models;
 using HotelRoomAvailability.Repositories.Abstractions;
 using HotelRoomAvailability.Services;
@@ -23,7 +24,7 @@ public class AvailabilityServiceTests
     }
 
     [Test]
-    public void Should_ReturnEmpty_When_HotelNotFoundInAvailability()
+    public async Task Should_ReturnEmpty_When_HotelNotFoundInAvailabilityAsync()
     {
         // Arrange
         _hotelsRepository.Get(Arg.Any<string>()).Returns((Hotel?)null);
@@ -31,14 +32,14 @@ public class AvailabilityServiceTests
         var commands = new RoomAvailabilityCommand[] { new() { HotelId = "H1" } };
 
         // Act
-        var result = _sut.Availability(commands);
+        var result = await _sut.Availability(commands);
 
         // Assert
         result.Should().BeEmpty();
     }
 
     [Test]
-    public void Should_ReturnCorrectAvailabilityCount_When_HotelAndBookingsExist()
+    public async Task Should_ReturnCorrectAvailabilityCount_When_HotelAndBookingsExistAsync()
     {
         // Arrange
         var hotel = new Hotel
@@ -56,12 +57,12 @@ public class AvailabilityServiceTests
         };
 
         var bookings = new List<Booking>
-    {
-        new() { HotelId = "H1", RoomType = "SGL", Arrival = DateTime.Now, Departure = DateTime.Now.AddDays(1) }
-    };
+        {
+            new() { HotelId = "H1", RoomType = "SGL", Arrival = DateTime.Now, Departure = DateTime.Now.AddDays(1) }
+        };
 
         _hotelsRepository.Get("H1").Returns(hotel);
-        _bookingsRepository.Get("H1", "SGL", Arg.Any<DateTime>(), Arg.Any<DateTime>()).Returns(bookings);
+        _bookingsRepository.Get("H1", "SGL", Arg.Any<DateTime>(), Arg.Any<DateTime>()).Returns(bookings.ToAsyncEnumerable());
 
         var commands = new RoomAvailabilityCommand[]
         {
@@ -69,7 +70,7 @@ public class AvailabilityServiceTests
         };
 
         // Act
-        var result = _sut.Availability(commands);
+        var result = await _sut.Availability(commands);
 
         // Assert
         result.Should().HaveCount(1);
@@ -77,7 +78,7 @@ public class AvailabilityServiceTests
     }
 
     [Test]
-    public void Should_AllowOverbooking_When_OverbookingIsAllowed()
+    public async Task Should_AllowOverbooking_When_OverbookingIsAllowedAsync()
     {
         // Arrange
         var hotel = new Hotel
@@ -94,12 +95,12 @@ public class AvailabilityServiceTests
         };
 
         var bookings = new List<Booking>
-    {
-        new() { HotelId = "H1", RoomType = "DBL", Arrival = DateTime.Now, Departure = DateTime.Now.AddDays(1) }
-    };
+        {
+            new() { HotelId = "H1", RoomType = "DBL", Arrival = DateTime.Now, Departure = DateTime.Now.AddDays(1) }
+        };
 
         _hotelsRepository.Get("H1").Returns(hotel);
-        _bookingsRepository.Get("H1", "DBL", Arg.Any<DateTime>(), Arg.Any<DateTime>()).Returns(bookings);
+        _bookingsRepository.Get("H1", "DBL", Arg.Any<DateTime>(), Arg.Any<DateTime>()).Returns(bookings.ToAsyncEnumerable());
 
         var commands = new RoomAvailabilityCommand[]
         {
@@ -107,7 +108,7 @@ public class AvailabilityServiceTests
         };
 
         // Act
-        var result = _sut.Availability(commands);
+        var result = await _sut.Availability(commands);
 
         // Assert
         result.Should().HaveCount(1);
@@ -115,13 +116,13 @@ public class AvailabilityServiceTests
     }
 
     [Test]
-    public void Should_ReturnEmpty_When_HotelNotFoundInSearch()
+    public async Task Should_ReturnEmpty_When_HotelNotFoundInSearchAsync()
     {
         // Arrange
         _hotelsRepository.Get(Arg.Any<string>()).Returns((Hotel?)null);
 
         // Act
-        var result = _sut.Search("SGL", "H1", 10);
+        var result = await _sut.Search("SGL", "H1", 10);
 
         // Assert
         result.Should().BeEmpty();

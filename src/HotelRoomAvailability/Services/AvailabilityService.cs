@@ -1,4 +1,5 @@
-﻿using HotelRoomAvailability.Models;
+﻿using HotelRoomAvailability.Extensions;
+using HotelRoomAvailability.Models;
 using HotelRoomAvailability.Repositories.Abstractions;
 
 namespace HotelRoomAvailability.Services;
@@ -9,13 +10,13 @@ public class AvailabilityService(IHotelsRepository hotelsRepository, IBookingsRe
 
     private readonly IBookingsRepository _bookingsRepository = bookingsRepository;
 
-    public IEnumerable<RoomsAvailability> Availability(params RoomAvailabilityCommand[] roomAvailabilityCommands)
+    public async Task<IEnumerable<RoomsAvailability>> Availability(params RoomAvailabilityCommand[] roomAvailabilityCommands)
     {
         var result = new List<RoomsAvailability>();
 
         foreach (var availabilityCommand in roomAvailabilityCommands)
         {
-            var hotel = _hotelsRepository.Get(availabilityCommand!.HotelId!);
+            var hotel = await _hotelsRepository.Get(availabilityCommand!.HotelId!);
             if (hotel is null)
             {
                 Console.WriteLine($"Hotel '{availabilityCommand!.HotelId!}' not found.");
@@ -24,7 +25,9 @@ public class AvailabilityService(IHotelsRepository hotelsRepository, IBookingsRe
 
             var roomsCount = hotel?.Rooms?.Count(r => r.RoomType == availabilityCommand.RoomType);
 
-            var bookedRoomsCount = _bookingsRepository.Get(availabilityCommand!.HotelId!, availabilityCommand!.RoomType!, availabilityCommand.StartDate, availabilityCommand.EndDate).Count();
+            var bookedRoomsCount = await _bookingsRepository
+                .Get(availabilityCommand!.HotelId!, availabilityCommand!.RoomType!, availabilityCommand.StartDate, availabilityCommand.EndDate)
+                .CountAsync();
 
             int? roomsAvailabilityCount = roomsCount - bookedRoomsCount > 0
                 ? roomsCount - bookedRoomsCount
@@ -56,9 +59,9 @@ public class AvailabilityService(IHotelsRepository hotelsRepository, IBookingsRe
         return result;
     }
 
-    public IEnumerable<RoomsAvailability> Search(string roomType, string hotelId, int daysAhead)
+    public async Task<IEnumerable<RoomsAvailability>> Search(string roomType, string hotelId, int daysAhead)
     {
-        var hotel = _hotelsRepository.Get(hotelId);
+        var hotel = await _hotelsRepository.Get(hotelId);
         if (hotel is null)
         {
             Console.WriteLine($"Hotel '{hotelId}' not found.");
@@ -74,7 +77,7 @@ public class AvailabilityService(IHotelsRepository hotelsRepository, IBookingsRe
 
         var bookedRooms = _bookingsRepository.Get(hotelId, roomType, today, today.AddDays(daysAhead));
 
-        foreach (var bookedRoom in bookedRooms)
+        await foreach (var bookedRoom in bookedRooms)
         {
             foreach (var availableRoom in availableRooms)
             {

@@ -4,7 +4,7 @@ namespace HotelRoomAvailability.Services;
 
 public interface IAvailabilityService
 {
-    IEnumerable<RoomsAvailability> Availability(params RoomAvailabilityCommand[] roomAvailabilityCommands); // HandleAvailability
+    Task<IEnumerable<RoomsAvailability>> Availability(params RoomAvailabilityCommand[] roomAvailabilityCommands);
 
-    IEnumerable<RoomsAvailability> Search(string roomType, string hotelId, int daysAhead); // HandleSearch
+    Task<IEnumerable<RoomsAvailability>> Search(string roomType, string hotelId, int daysAhead);
 }
